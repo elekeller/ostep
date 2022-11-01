@@ -1,0 +1,88 @@
+Process Abstraction
+
+process: a running program
+programm: bunch of instructions/data on the disk
+os: turns program into something useful
+user: wants to run many programs at the same time
+
+crux: how to provide the illusion of many CPUs?
+
+os: virtual CPUs
+technique: time sharing
+cost: performance
+context switch: used by modern OSes, stops
+    Program A to allow Program B to use the CPU
+cpu: uses time sharing
+    <=> disk: uses space sharing
+policies: help the OS to decide which program to
+    run at a certain time considering history
+    (which program run before?), workload (what
+    types of programs are run?) and performance
+    (interactive performance or throughput?)
+
+machine state: what parts of the machine are
+    involved/important during a process?
+memory: obvious component for processes as it
+    contains instructions and data
+adress space: part of the memory a process
+    can adress
+program counter/instruction pointer: which
+    instruction comes next?
+stack pointer and frame pointer:
+    where should local variables, fn-parameters
+    and return adresses be stored?
+every os interface must include some APIs to
+    deal with processes:
+    - create: when user wants to start a program
+    - destroy: when user wants to terminate a
+        program before it stops or if it doesnt
+        stop by itself
+    - wait: wait for a process to stop running
+    - miscellaneous control: stop for a while
+        and then resume it
+    - status: get info about a processes' state,
+        or for how long it has ben running
+
+process creation:
+- program lies on the disk/ssd
+- os reads bytes from the disk and writes
+    them to memory
+- modern OSes perform this lazily
+- runtime stack is allocated
+- stack is initialized by os with argc and **argv
+- memory is also allocated for the program's heap
+- heap: stores data structures like linkedlist,
+    trees, hash tables,...
+- in C, heap is allocated with malloc() and freed
+    with free()
+- after loading the code and static data into memory,
+    allocating and initializing the stack, the os
+    has to jump to the entry point (main())
+
+process states:
+a process can be in one of three states:
+    - running: it's executing instructions
+    - ready: it's ready to run but the os hasn't
+        chosen to run it at the moment
+    - blocked: the process has performed an
+        operation that interrupts the process until
+        it's finished, for example write/read data
+        from the disk. In the mean time, another
+        process can use the CPU.
+
+state diagram:
+
+                            descheduled
+            running <================> ready
+I/O: initiate   |   scheduled           ^ I/O:done
+                |                       |
+                -------> blocked --------
+
+- processes can be moved between the scheduled and
+descheduled state by the OS
+- ready = descheduled, running = scheduled
+- OSes usually have a process/task list to keep
+    track of all running programs
+- final/zombie state: process has finished but wasn't
+    removed yet, parent process can gather
+    return values

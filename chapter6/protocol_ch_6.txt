@@ -1,0 +1,55 @@
+- virtualization: running many jobs seemingly at the same time
+- idea: run one process for a while then another one
+PID: 1       2          3           ...
+    run
+    run
+            run
+            run
+                        ...
+    run
+    run
+    finished
+            ...
+- challenges:
+    - performance: implementation should not add
+        excessive overhead
+    - control: processes should be run efficiently
+        while maintaining control over the CPU at
+        the same time
+- limited direct execution:
+    - direct execution: run the program directly
+    on the CPU
+- program start:
+    - create process entry in a process list
+    - load program from disk to ram
+    - allocate memory, set up argc and argv
+    - clear registers
+    - locate entry point (i.e. main() routine)
+    - jump to entry point
+- program run:
+    - run main()
+    - execute return from main
+- program end:
+    - free memory
+    - remove from process list
+___________________________Recap Chapter 2:___________________________
+- hardware privilege levels:
+    - USER MODE: where processes run in, LOW privilege
+    - KERNEL MODE: OS has full access to the hardware, HIGH privilege
+- system call:
+    - usually initiated through a TRAP
+    - OS sets up a TRAP HANDLER
+    - HARDWARE TRANSFERS CONTROL to trap handler
+    - PRIVILEGE LEVEL is RAISED to kernel mode
+    - now the OS can do things like I/O requests
+    or allocate more memory for the program
+    - RETURN FROM TRAP instruction when finished
+- TRAP: special HARDWARE INSTRUCTION
+______________________________________________________________________
+- TRAP HANDLER:
+    - code that is run when exceptional events (I/O, malloc,..) occur
+- TRAP TABLE:
+    - contains TRAP HANDLERs
+    - set up by OS at boot time with special instruction
+    - hardware knows what code to jump to when these events occur
+- SYSTEM CALL NUMBER

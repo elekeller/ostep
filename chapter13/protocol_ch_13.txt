@@ -1,0 +1,34 @@
+Address spaces
+
+Memory if there was only one program/thread:
+
+#  Program code #
+#  | HEAP       # grows during allocations
+#  V            #
+#               #
+#  free space   #
+#               #
+#          ^    #
+#    STACK |    # grows during proceduce calls/...
+
+Problem: Users want many threads at the same time and there's no simple
+way to predict how much Memory they will need.
+
+Solution: Virtualize Memory. Let the program think it's at Address 0 while
+in reality it's somewhere else.
+
+You can print out the address of a pointer or the program itself but every
+address that you can print is virtual, you wil never be able to see the
+real/physical address of anything.
+
+Goal Transparency: not actually transparency in terms of everybody knows what's
+going on inside but implementing virtual memory in a way that is invisible to
+the running programm.
+
+TLB (Translation Lookaside Buffer): Does the job of assigning the physical
+adresses to the virtual ones
+
+Isolation: When a process fails, it can't harm other processes if it's isolated
+from them
+
+Modern OSes even Isolate some parts of the OS from others

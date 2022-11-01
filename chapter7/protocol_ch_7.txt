@@ -1,0 +1,72 @@
+Schelduling:
+
+Metric:
+turnaround time: t_completion - t_arrival
+    - it doesn't matter, how long the actual work takes,
+        but how long it takes from the point where it
+        was issued till it's finished:
+
+    t   1   2   3   4
+        J        ###X
+        |       |busy|
+        | turnaround |
+        |            |
+        |            Job finished
+        |
+        Job arrived/issued
+
+ASSUMPTIONS:
+1 all Jobs arrive at the same time
+2 all jobs do only CPU (no I/O)
+3 once a job is started, it is also finished
+
+- FIFO: "first in, first out", also referred as "first come, first served"
+    - avg turnaround time is bad because small jobs
+        have to wait for long jobs
+
+A #############X
+B               ###X
+C                   #####X
+
+- SJF: "Shortest Job first"
+    - avg turnaround time is better because small jobs' waiting
+        time is shorter
+
+If we relax assumption 1 SJF can perform as badly as FIFO at worst case.
+
+Let's relax assumption 1 and 3 (jobs can arrive at different times but
+they can be interrupted in mid-execution)
+
+- STCF: "Shortest time to completion first"
+
+    time    1   2   3   4   5   6   7   8   9
+           A####    ####        ############X
+           |   B###X
+           |   |   |   C#######X
+           |   |   |   |
+           |   |   |   C (2) arrives, A has 3 left to completion
+           |   |   B (1) finished
+           |    B (1) arrives, A has 4 left to completion
+           A (5) arrives
+
+    - good avg turnaround time because the smallest (remaining) job
+        is guaranteed to be executed and finished first at each time
+
+New Metric:
+response time: time difference from when a job arrives to when it is first executed
+t_response = t_first_run - t_arrival
+
+0   1   2
+A####
+B    ####
+C        ####
+|   |   |C:2
+|   |B:1
+|A:0
+
+- RR: "Round Robin", also referred to as "time slicing"
+    - each job is run for a  time slice (scheduling quantum) and then the scheduler
+        switches to the next job in the run queue
+    - response time is faster than for STCF/SJF/FIFO
+    - avg turnaround time is bad because all jobs have to wait for each other and the more
+        jobs there are in the queue, the longer it takes till it's one's job's turn again

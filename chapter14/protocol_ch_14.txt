@@ -1,0 +1,142 @@
+Types of Memory in C programs:
+
+- stack: sometimes called automatic Memory
+
+int x; // declares an integer on the stack
+
+the compiler will take care of making space
+for you and also dellocates implicitly when
+the function/scope of a variable ends.
+
+- heap: long-lived memory
+#include <stdlib.h>
+...
+int *x = (int *)malloc(sizeof(int));
+    ^           ^
+    |           |
+    |       request system to make space for
+    |       an integer on the heap
+compiler: pointer to an integer on the stack
+
+- malloc():
+    - returns a pointer to a free space with the
+    requested size on success and NULL on failure
+    - part of the C library but if you include
+    stdlib, the compiler can check if you've passed
+    the right amount and type of arguments
+    - argument: size_t size is the number of bytes
+    - typing numbers directly would be considered
+    bad practise
+    - instead use routines and macros
+    (#define SIZE size, sizeof(type))
+- sizeof(type):
+replaced by the size of the type at compile time,
+can be thought of as an operator and not a
+function call
+
+int *x = malloc(10 * sizeof(int));
+// int-array with 10 entries
+printf("%d\n", sizeof(x));
+/*
+ * prints out 4 on 32 bit machines and 8 on 64
+ * this is NOT the size of our array but the size
+ * of the pointer
+ */
+int x[10];
+printf("%d\n", sizeof(x));
+/*
+ * this time, the compiler has enough static
+ * information -> prints out 40
+ */
+char *orig = "hello world";
+char *copy = malloc(strlen(orig) + 1);
+/*
+ * strlen returns the length of the original
+ * string, the + 1 takes in account for the
+ * end-of-string-character
+ * using sizeof(orig) could lead to problems
+ */
+- Why is there sometimes a cast in front of malloc?
+malloc returns a void pointer. (Void is a
+common/neutral)
+As we now know, this is just the adress to the
+requested space and it doesn't matter to our system
+what type of data we store there, so casting it won't
+accomplish anything.
+But the cast is a way of telling the compiler, other
+programmers, or yourself that you're aware of what
+you are doing.
+- free(): every malloc needs a free
+
+int *x = malloc(10 * sizeof(int));
+...
+free(x);
+/*
+ * only argument is the adress, the memory-allocation
+ * library has to keep track of the size
+ */
+
+Common Memory Errors:
+    - often times, the compiler won't warn or stop you from
+    doing terrible things
+    - new languages have memory management systems
+    (new for malloc and garbage collector for free)
+    - garbage collector looks for memory you don't have
+    any more references to and frees it for you
+- using unallocated memory:
+    char *src = "hello";
+    char *dst;          // unallocated!
+    strcpy(dst, src);   // segmentation fault
+
+    this can be fixed either by using malloc(strlen(src) + 1) before strcpy
+    or by using strdup()
+    - char *strdup(char *src) returns a pointer to the memory location of
+        the duplicate. It uses malloc to allocate the space and can be freed.
+- not allocating enough memory:
+    char *src = "hello";
+    char *dst = (char *)malloc(strlen(src)); // too small!
+    strcpy(dst, src); // works properly
+
+    there are different options how this one turns out:
+    - sometimes it will run just fine because strcpy overwrites a variable
+    that isn't used anymore or the malloc library allocated a little
+    more space than you requested anyway
+    - in other cases it will fault and crash
+    Lesson: just because it ran correctly once doesn't mean it's correct.
+- forgetting to initialize allocated memory:
+    - if you don't fill in any data in the space you've allocated, your program
+        will eventually encounter an UNINITIALIZED READ, where it reads some
+        unknown value from the heap data, possibly something random and harmful
+- forgetting to free memory:
+    - known as MEMORY LEAK
+    - this is a problem on long running programs or the OS itself. At some point
+        you will run out of memory and a restart is required
+    - Note: using a garbage collector doesn't help here:
+        if there are still references to a chunk of memory, it won't be collected
+    - in some cases, it may seem reasonable not to call free() as your program is
+        short lived and the OS will clean up all of its allocated pages, but it's
+        better to develop good practises and free everything
+- freeing memory before you are done with it
+    - such pointers are called dangling pointers
+    - using them can crash the program or overwrite valid memory
+- double freeing
+    - can cause the memory-allocation to do weird things and often crash the program
+- calling free incorrectly
+    - also called INVALID FREE
+    - if you pass some other value you haven't recieved from a malloc call, bad things
+        can and will happen
+Tools: purify(IBM) and valgrind#
+OS Support:
+- malloc() and free() aren't system calls, they're library calls
+- the malloc library manages space within your virtual address space, but itself is
+    built on top of some system calls like
+    brk (change program's break point/end of the heap) or
+    sbrk (passed an increment but similar purpose)
+- alternative to malloc():
+    void *mmap(void *addr, size_t length, int prot, int flags,
+                  int fd, off_t offset);
+    seems to be more complicated
+    calloc()
+    initializes space with zeros
+- realloc():
+    allocates new (larger) memory and copies values from old memory
