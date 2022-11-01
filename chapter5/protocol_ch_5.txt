@@ -1,0 +1,6 @@
+- int fork(): creates a copy of the current process (child) which starts after this expression,
+    |
+    - if succesful, fork() returns 0 in the child process and the child's process id in the parent process
+    - if not, it just returns -1 (or another negative number) in the "failed parent" process
+- as we already know, the outcome is non-deterministic because the scheduler decides which (copy or original) runs first
+- int wait(): makes a process wait for its children p.s to finish

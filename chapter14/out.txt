@@ -1,0 +1,6 @@
+How many Entries do you want to have?
+Enter 0 values:
+How many entries do you want to add?
+
+Here's the final vector:
+hello
