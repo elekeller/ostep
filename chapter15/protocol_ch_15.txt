@@ -13,24 +13,24 @@ void func()
 
 Program's memory:                               Real Memory:
 
-0KB ____________________
-    |   movl...         | <- Base Register      0KB |                   |
+0KB  ___________________                        0KB  ___________________
+    |   movl...         | <- Base Register          | Operating System  |
     |   addl...         |                           |                   |
-    |   movl...         |                           |                   |
-    |   Program code    |                           |                   |
-    |___________________|                           |                   |
-    |       Heap        |                           |                   |
-    |___________________|                           |                   |
-    |        |          |                           |                   |
-    |  heap  V          |                           |                   |
+    |   movl...         |                           |___________________|
+    |   Program code    |                           |   (not in use)    |
+    |___________________|                           |___________________|________
+    |       Heap        |                           |_______code________|   R   P
+    |___________________|                           |_______heap________|   E   R
+    |        |          |                           |         |         |   L   O
+    |  heap  V          |                           |         V         |   O   C
+    |                   |                           |  (allocated but   |   C   E
+    |      (free)       |                           |    not in use)    |   A   S
+    |                   |                           |         ^         |   T   S
+    |  stack ^          |                           |_________|_________|   E
+    |________|__________|                           |_______stack_______|___D____
     |                   |                           |                   |
-    |      (free)       |                           |                   |
-    |                   |                           |                   |
-    |  stack ^          |                           |                   |
-    |________|__________|                           |                   |
-    |                   |                           |                   |
-    |       Stack       |                           |                   |
-16KB|___________________| <- Bounds Regiser     64KB|                   |
+    |       Stack       |                           |   (not in use)    |
+16KB|___________________| <- Bounds Regiser     64KB|___________________|
 
 for the program, it looks like                  ...when in reality, it's
 it's using the whole memory...                  using  just  a  fragment
@@ -52,3 +52,5 @@ Assumptions (unrealistic, will be relaxed step by step):
 - user's address space must be placed contiuously in memory (no gaps)
 - size of the address space is smaller than the size of the physical memory
 - each address space has the same size
+
+physical address = virtual address + base
