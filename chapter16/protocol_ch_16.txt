@@ -1,0 +1,53 @@
+SEGMENTATION
+
+PROBLEM:
+
+Program's memory:                               Real Memory:
+
+0KB  ___________________                        0KB  ___________________
+    |   movl...         | <- Base Register          | Operating System  |
+    |   addl...         |                           |                   |
+    |   movl...         |                           |___________________|
+    |   Program code    |                           |   (not in use)    |
+    |___________________|                           |___________________|________
+    |       Heap        |                           |_______code________|   R   P
+    |___________________|                           |_______heap________|   E   R
+    |        |          |                           |         |         |   L   O
+    |  heap  V          |                           |         V         |   O   C
+    |                   |                           |       WASTED      |   C   E
+    |       WASTED      |                           |       SPACE       |   A   S
+    |       SPACE       |                           |         ^         |   T   S
+    |  stack ^          |                           |_________|_________|   E
+    |________|__________|                           |_______stack_______|___D____
+    |                   |                           |                   |
+    |       Stack       |                           |   (not in use)    |
+16KB|___________________| <- Bounds Regiser     64KB|___________________|
+
+sizeof(program) = some fixed amount, in this example 16KB
+
+SOUTION:
+- Every program has THREE logical segments (code, stack, heap)
+- let's give every segment its own base and bounds register
+ ___________________
+|                   |
+|        OS         |
+|___________________|
+|                   |
+|   (not in use)    |
+|         ^         |
+|_________|_________|
+|_______stack_______|
+|   (not in use)    |
+|___________________|
+|_______code________|
+|_______heap________|
+|         |         |
+|         V         |
+|                   |
+|___(not in use)____|
+
+sizeof(program) = sizeof(code) + sizeof(stack) + sizeof(heap)
+
+now, every part of space that is not in use can be used by other programs.
+- when something is loaded from memory, (eg instruction from code), the hardware will
+add the base value to the virtual address and check if the VA is smaller than the bounds value
