@@ -1,0 +1,49 @@
+el121kel@ct-bsys-15:~/z-drive/ostep/chapter16$ python3 segmentation.py -s 1 >> protocol_hw.txt
+
+ARG seed 1
+ARG address space size 1k
+ARG phys mem size 16k
+
+Segment register information:
+
+  Segment 0 base  (grows positive) : 0x000030e1 (decimal 12513)                     <<< 12513
+  Segment 0 limit                  : 290                                            <<< 12803
+
+  Segment 1 base  (grows negative) : 0x0000122b (decimal 4651)                      <<< 4651
+  Segment 1 limit                  : 472                                            <<< 4179
+
+Virtual Address Trace
+  VA  0: 0x000001fb (decimal:  507) --> PA or segmentation violation?
+  VA  1: 0x000001cc (decimal:  460) --> PA or segmentation violation?               <<< valid
+  VA  2: 0x0000029b (decimal:  667) --> PA or segmentation violation?               <<< segval
+  VA  3: 0x00000327 (decimal:  807) --> PA or segmentation violation?               <<< segval
+  VA  4: 0x00000060 (decimal:   96) --> PA or segmentation violation?               <<< valid
+
+For each virtual address, either write down the physical address it translates to
+OR write down that it is an out-of-bounds address (a segmentation violation). For
+this problem, you should assume a simple address space with two segments: the top
+bit of the virtual address can thus be used to check whether the virtual address
+is in segment 0 (topbit=0) or segment 1 (topbit=1). Note that the base/limit pairs
+given to you grow in different directions, depending on the segment, i.e., segment 0
+grows in the positive direction, whereas segment 1 in the negative.
+
+el121kel@ct-bsys-15:~/z-drive/ostep/chapter16$ python3 segmentation.py -s 1 -c >> protocol_hw.txt
+
+ARG seed 1
+ARG address space size 1k
+ARG phys mem size 16k
+
+Segment register information:
+
+  Segment 0 base  (grows positive) : 0x000030e1 (decimal 12513)
+  Segment 0 limit                  : 290
+
+  Segment 1 base  (grows negative) : 0x0000122b (decimal 4651)
+  Segment 1 limit                  : 472
+
+Virtual Address Trace
+  VA  0: 0x000001fb (decimal:  507) --> SEGMENTATION VIOLATION (SEG0)
+  VA  1: 0x000001cc (decimal:  460) --> SEGMENTATION VIOLATION (SEG0)
+  VA  2: 0x0000029b (decimal:  667) --> VALID in SEG1: 0x000010c6 (decimal: 4294)
+  VA  3: 0x00000327 (decimal:  807) --> VALID in SEG1: 0x00001152 (decimal: 4434)
+  VA  4: 0x00000060 (decimal:   96) --> VALID in SEG0: 0x00003141 (decimal: 12609)
