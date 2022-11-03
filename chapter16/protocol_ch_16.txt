@@ -51,3 +51,14 @@ sizeof(program) = sizeof(code) + sizeof(stack) + sizeof(heap)
 now, every part of space that is not in use can be used by other programs.
 - when something is loaded from memory, (eg instruction from code), the hardware will
 add the base value to the virtual address and check if the VA is smaller than the bounds value
+
+13  12 |11  10  09  08  07  06  05  04  03  02  01  00|
+ 0   1 | 0   0   0   0   0   1   1   0   1   0   0   0|
+       |                                              |
+SEGMENT|                    OFFSET                    |
+
+- Hardware takes first two bits to determine the Segment and the remaining ones are the offset
+- in our example, the stack grows backwards/upwards instead of forwards/downwards -> we need
+one bit per segment to store the direction it grows
+- new Problem: when there are many processes, there are also many holes between their segments,
+so memory is wasted again
