@@ -50,6 +50,7 @@ sizeof(program) = sizeof(code) + sizeof(stack) + sizeof(heap)
 
 now, every part of space that is not in use can be used by other programs.
 - when something is loaded from memory, (eg instruction from code), the hardware will
+<<<<<<< Updated upstream
 add the base value to the virtual address and check if the VA is smaller than the bounds value
 
 13  12 |11  10  09  08  07  06  05  04  03  02  01  00|
@@ -62,3 +63,6 @@ SEGMENT|                    OFFSET                    |
 one bit per segment to store the direction it grows
 - new Problem: when there are many processes, there are also many holes between their segments,
 so memory is wasted again
+=======
+add the base value to the virtual address and check if the VA is smaller than the bounds value
+>>>>>>> Stashed changes
