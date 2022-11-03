@@ -150,3 +150,60 @@ Action: c forks f
                                    ├── d
                                    │   └── e
                                    └── f
+
+el121kel@ct-bsys-15:~/z-drive/ostep/chapter5/homework_py$ python3 fork.py -A a+b,b+c,c+d,c-
+
+ARG seed -1
+ARG fork_percentage 0.7
+ARG actions 5
+ARG action_list a+b,b+c,c+d,c-
+ARG show_tree False
+ARG just_final False
+ARG leaf_only False
+ARG local_reparent False
+ARG print_style fancy
+ARG solve False
+
+                           Process Tree:
+                               a
+
+Action: a forks b
+Process Tree?
+Action: b forks c
+Process Tree?
+Action: c forks d
+Process Tree?
+Action: c EXITS
+Process Tree?
+el121kel@ct-bsys-15:~/z-drive/ostep/chapter5/homework_py$ python3 fork.py -A a+b,b+c,c+d,c- -c
+
+ARG seed -1
+ARG fork_percentage 0.7
+ARG actions 5
+ARG action_list a+b,b+c,c+d,c-
+ARG show_tree False
+ARG just_final False
+ARG leaf_only False
+ARG local_reparent False
+ARG print_style fancy
+ARG solve True
+
+                           Process Tree:
+                               a
+
+Action: a forks b
+                               a
+                               └── b
+Action: b forks c
+                               a
+                               └── b
+                                   └── c
+Action: c forks d
+                               a
+                               └── b
+                                   └── c
+                                       └── d
+Action: c EXITS
+                               a
+                               ├── b
+                               └── d                <<< d is appended to first stem
