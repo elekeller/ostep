@@ -13,24 +13,24 @@ void func()
 
 Program's memory:                               Real Memory:
 
-0KB ____________________
-    |   movl...         | <- Base Register      0KB |                   |
+0KB  ___________________                        0KB  ___________________
+    |   movl...         | <- Base Register          | Operating System  |
     |   addl...         |                           |                   |
-    |   movl...         |                           |                   |
-    |   Program code    |                           |                   |
-    |___________________|                           |                   |
-    |       Heap        |                           |                   |
-    |___________________|                           |                   |
-    |        |          |                           |                   |
-    |  heap  V          |                           |                   |
+    |   movl...         |                           |___________________|
+    |   Program code    |                           |   (not in use)    |
+    |___________________|                           |___________________|________
+    |       Heap        |                           |_______code________|   R   P
+    |___________________|                           |_______heap________|   E   R
+    |        |          |                           |         |         |   L   O
+    |  heap  V          |                           |         V         |   O   C
+    |                   |                           |  (allocated but   |   C   E
+    |      (free)       |                           |    not in use)    |   A   S
+    |                   |                           |         ^         |   T   S
+    |  stack ^          |                           |_________|_________|   E
+    |________|__________|                           |_______stack_______|___D____
     |                   |                           |                   |
-    |      (free)       |                           |                   |
-    |                   |                           |                   |
-    |  stack ^          |                           |                   |
-    |________|__________|                           |                   |
-    |                   |                           |                   |
-    |       Stack       |                           |                   |
-16KB|___________________| <- Bounds Regiser     64KB|                   |
+    |       Stack       |                           |   (not in use)    |
+16KB|___________________| <- Bounds Regiser     64KB|___________________|
 
 for the program, it looks like                  ...when in reality, it's
 it's using the whole memory...                  using  just  a  fragment
@@ -53,10 +53,18 @@ Assumptions (unrealistic, will be relaxed step by step):
 - size of the address space is smaller than the size of the physical memory
 - each address space has the same size
 
-STATIC RELOCATION:
-- one of the first solutions
-- executable is taken by a LOADER which changes the addresses
-(movl 1000, %eax -> movl 4000, %eax)
-- not secure as processes can create bad addresses
+physical address = virtual address + base
 
-
+DYNAMIC RELOCATION (hardware based address translation):
+- realized by adding a pair of registers for base and bounds in the
+MEMORY MANAGEMENT UNIT of the CPU
+- the hardware will add the base value to the virtual addr.
+from the program when it wants to load/store something
+- we also need one bit for storing if we are currently in KERNEL or USER MODE
+(perhaps in some kind of processor status word)
+- we also need to be able to RAISE AN EXCEPTION if a program tries to
+access privileged instructions or memory that is out of its bounds
+- we also need to be able to handle these Exceptions -> Exception Handlers also
+need to be stored somewehere (it will Probably terminate this process)
+- the OS needs to be able to update the base/bounds values before it lets a
+program run
